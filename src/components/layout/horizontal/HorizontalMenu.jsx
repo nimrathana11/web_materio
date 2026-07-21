@@ -9,29 +9,23 @@ import {
   Box,
   Button,
   Drawer,
-  List,
-  ListItemButton,
-  ListItemText,
-  IconButton,
   Paper,
-  useTheme,
-  useMediaQuery
+  useTheme
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import MenuIcon from '@mui/icons-material/Menu'
 
 // Local Imports
 import Link from '@/components/Link'
 import { MenuData } from '@data/navigation/MenuData'
-import { useSettings } from '@core/hooks/useSettings'
+import useHorizontalNav from '@menu/hooks/useHorizontalNav'
 
 const getNodeKey = (node, index, parentPath = '') => {
   return [parentPath, node?.label, index].filter(Boolean).join('-')
 }
 
 // Submenu Option Renderer
-const MenuEntry = ({ node, closeParent, isLinkActive, theme }) => {
+const MenuEntry = ({ node, closeParent, isLinkActive }) => {
   const [open, setOpen] = useState(false)
   const [closeTimer, setCloseTimer] = useState(null)
   const active = isLinkActive(node.href)
@@ -154,7 +148,6 @@ const MenuEntry = ({ node, closeParent, isLinkActive, theme }) => {
                   closeParent?.()
                 }}
                 isLinkActive={isLinkActive}
-                theme={theme}
               />
             ))}
           </Paper>
@@ -273,7 +266,6 @@ const TopLevelButton = ({ node, isLinkActive, theme }) => {
                 node={child}
                 closeParent={closeMenu}
                 isLinkActive={isLinkActive}
-                theme={theme}
               />
             ))}
           </Paper>
@@ -288,6 +280,7 @@ const TopLevelButton = ({ node, isLinkActive, theme }) => {
 const HorizontalMenu = () => {
   const theme = useTheme()
   const pathname = usePathname()
+  const { isBreakpointReached, isToggled, toggleVerticalNav } = useHorizontalNav()
 
   const isLinkActive = href => Boolean(href && (pathname === href || pathname.startsWith(`${href}/`)))
 
@@ -300,30 +293,83 @@ const HorizontalMenu = () => {
     })
   }, [])
 
+  const handleDrawerClose = () => {
+    toggleVerticalNav(false)
+  }
+
   return (
-    <Box
-      sx={{
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        py: 2, // Consistent padding for standard pill height alignment
-        px: { xs: 4, md: 6 }
-      }}
-    >
-      {(
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-          {flattenedMenuItems.map((item, idx) => (
-            <TopLevelButton
-              key={getNodeKey(item, idx, 'top')}
-              node={item}
-              isLinkActive={isLinkActive}
-              theme={theme}
-            />
-          ))}
+    <>
+      <Drawer
+        open={isBreakpointReached && isToggled}
+        onClose={handleDrawerClose}
+        ModalProps={{ keepMounted: true }}
+        PaperProps={{
+          sx: {
+            width: 280,
+            borderRight: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            boxShadow: 8
+          }
+        }}
+      >
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper' }}>
+          <Box
+            sx={{
+              px: 3,
+              py: 2.5,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            <Box component='span' sx={{ fontSize: '0.95rem', fontWeight: 700, color: 'text.primary' }}>
+              Navigation
+            </Box>
+            <Button size='small' onClick={handleDrawerClose}>
+              Close
+            </Button>
+          </Box>
+
+          <Box sx={{ flex: 1, overflowY: 'auto', py: 1 }}>
+            {flattenedMenuItems.map((item, idx) => (
+              <MenuEntry
+                key={getNodeKey(item, idx, 'drawer')}
+                node={item}
+                closeParent={handleDrawerClose}
+                isLinkActive={isLinkActive}
+              />
+            ))}
+          </Box>
+        </Box>
+      </Drawer>
+
+      {!isBreakpointReached && (
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            py: 2,
+            px: { xs: 4, md: 6 }
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+            {flattenedMenuItems.map((item, idx) => (
+              <TopLevelButton
+                key={getNodeKey(item, idx, 'top')}
+                node={item}
+                isLinkActive={isLinkActive}
+                theme={theme}
+              />
+            ))}
+          </Box>
         </Box>
       )}
-    </Box>
+    </>
   )
 }
 

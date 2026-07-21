@@ -32,13 +32,17 @@ const HorizontalNav = props => {
 
   const mergedBreakpoints = { ...defaultBreakpoints, ...breakpoints }
 
-  const { updateIsBreakpointReached, isBreakpointReached } = useHorizontalNav()
+  const { updateIsBreakpointReached, isBreakpointReached, toggleVerticalNav } = useHorizontalNav()
 
   const breakpointReached = useMediaQuery(customBreakpoint ?? (breakpoint ? mergedBreakpoints[breakpoint] : breakpoint))
 
   useEffect(() => {
     updateIsBreakpointReached(breakpointReached)
-  }, [breakpointReached, updateIsBreakpointReached])
+
+    if (!breakpointReached) {
+      toggleVerticalNav(false)
+    }
+  }, [breakpointReached, updateIsBreakpointReached, toggleVerticalNav])
 
   return (
     <StyledHorizontalNav

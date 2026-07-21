@@ -12,7 +12,6 @@ import { Box } from "@mui/material";
 // Component Imports
 import LayoutContent from "./components/horizontal/LayoutContent";
 import { useSettings } from "@core/hooks/useSettings";
-import useHorizontalNav from "@menu/hooks/useHorizontalNav";
 import themeConfig from "@configs/themeConfig";
 
 // Util Imports
@@ -22,16 +21,22 @@ const HorizontalLayout = (props) => {
   const { navbar, footer, navigation, children } = props;
   const { settings } = useSettings();
   const isContentCompact = settings.contentWidth === "compact";
-  const { isBreakpointReached } = useHorizontalNav();
   const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  if (settings.layout !== "horizontal") {
+    return null;
+  }
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setScrolled(window.scrollY > 10);
+  //   };
+
+  //   handleScroll();
+  //   window.addEventListener("scroll", handleScroll);
+
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   const StyledCompactWrapper = styled.div`
     width: 100%;
@@ -63,29 +68,19 @@ const HorizontalLayout = (props) => {
           transition: "all 0.25s ease-in-out",
           borderBottom: "1px solid",
           borderColor: settings.skin === "default" ? "transparent" : "divider",
-          ...(scrolled
-            ? {
-                backgroundColor:
-                  "rgba(var(--mui-palette-background-paperChannel, 255, 255, 255), 0.3)",
-                backdropFilter: "blur(40px)",
-                WebkitBackdropFilter: "blur(40px) saturate(200%)", // Safari support
-                boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.04)",
-              }
-            : {
-                backgroundColor: "background.paper",
-                backdropFilter: "none",
-                WebkitBackdropFilter: "none",
-                boxShadow: "none",
-              }),
+          backgroundColor: scrolled
+            ? "rgba(var(--mui-palette-background-paperChannel, 255, 255, 255), 0.3)"
+            : "background.paper",
+          backdropFilter: scrolled ? "blur(40px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(40px) saturate(200%)" : "none",
+          boxShadow: scrolled ? "0px 8px 32px rgba(0, 0, 0, 0.04)" : "none",
         }}
       >
         {navbar || null}
 
-        {!isBreakpointReached && (
-          <StyledCompactWrapper isContentCompact={isContentCompact}>
-            {navigation}
-          </StyledCompactWrapper>
-        )}
+        <StyledCompactWrapper isContentCompact={isContentCompact}>
+          {navigation}
+        </StyledCompactWrapper>
       </Box>
 
       {/* Main Content Area & Footer */}
