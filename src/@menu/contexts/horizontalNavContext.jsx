@@ -1,58 +1,69 @@
-'use client'
+"use client";
 
-import { createContext, useCallback, useMemo, useState } from 'react'
+import { createContext, useCallback, useMemo, useState } from "react";
 
-const HorizontalNavContext = createContext(null)
+const HorizontalNavContext = createContext({});
 
 export const HorizontalNavProvider = ({ children }) => {
-  // Existing States
-  const [isBreakpointReached, setIsBreakpointReached] = useState(false)
-  const [activeMenu, setActiveMenuState] = useState(null)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [horizontalNavState, setHorizontalNavState] = useState({
+    isBreakpointReached: false,
+    isToggled: false,
+    activeMenu: null,
+    isDropdownOpen: false,
+  });
 
-  // New States matching Vertical Navigation control variables
-  const [isToggled, setIsToggled] = useState(false)
+  const updateHorizontalNavState = useCallback((values) => {
+    setHorizontalNavState((prev) => ({
+      ...prev,
+      ...values,
+    }));
+  }, []);
 
-  // Stable callbacks
-  const updateIsBreakpointReached = useCallback(value => {
-    setIsBreakpointReached(Boolean(value))
-  }, [])
+  const updateIsBreakpointReached = useCallback((value) => {
+    setHorizontalNavState((prev) => ({
+      ...prev,
+      isBreakpointReached: Boolean(value),
+    }));
+  }, []);
 
-  const setActiveMenu = useCallback(menu => {
-    setActiveMenuState(menu)
-  }, [])
+  const toggleVerticalNav = useCallback((value) => {
+    setHorizontalNavState((prev) => {
+      return {
+        ...prev,
+        isToggled: value !== undefined ? Boolean(value) : !Boolean(prev.isToggled),
+      };
+    });
+  }, []);
 
-  // Added toggleVerticalNav-equivalent handler for Horizontal Context compatibility
-  const toggleVerticalNav = useCallback(value => {
-    setIsToggled(prev => (value !== undefined ? Boolean(value) : !prev))
-  }, [])
+  const setActiveMenu = useCallback((menu) => {
+    setHorizontalNavState((prev) => ({
+      ...prev,
+      activeMenu: menu,
+    }));
+  }, []);
 
-  // Memoized Context Value
-  // Removing static handlers from dependencies prevents the infinite render-loop trap!
   const value = useMemo(
     () => ({
-      isBreakpointReached,
-      activeMenu,
-      isDropdownOpen,
-      isToggled,
+      ...horizontalNavState,
+      updateHorizontalNavState,
       updateIsBreakpointReached,
-      setActiveMenu,
-      setIsDropdownOpen,
       toggleVerticalNav,
+      setActiveMenu,
     }),
     [
-      isBreakpointReached,
-      activeMenu,
-      isDropdownOpen,
-      isToggled,
-    ]
-  )
+      horizontalNavState,
+      updateHorizontalNavState,
+      updateIsBreakpointReached,
+      toggleVerticalNav,
+      setActiveMenu,
+    ],
+  );
 
   return (
     <HorizontalNavContext.Provider value={value}>
       {children}
     </HorizontalNavContext.Provider>
-  )
-}
+  );
+};
 
-export default HorizontalNavContext
+export default HorizontalNavContext;

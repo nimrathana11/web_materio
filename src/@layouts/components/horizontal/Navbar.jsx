@@ -14,7 +14,6 @@ import themeConfig from '@configs/themeConfig'
 // Util Imports
 import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
 
-// EMOTION STYLED CONTAINER: Mirroring the StyledMain dynamic logic
 const StyledNavbarContent = styled.div`
   width: 100%;
   ${({ isContentCompact }) =>

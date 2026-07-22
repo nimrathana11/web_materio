@@ -14,6 +14,7 @@ import LayoutContent from "./components/horizontal/LayoutContent";
 import { useSettings } from "@core/hooks/useSettings";
 import themeConfig from "@configs/themeConfig";
 import StyledHeader from '@layouts/styles/horizontal/StyledHeader'
+import StyledMain from '@layouts/styles/shared/StyledMain'
 
 // Util Imports
 import { horizontalLayoutClasses } from "./utils/layoutClasses";
@@ -71,15 +72,9 @@ const HorizontalLayout = (props) => {
           {navigation}
         </StyledCompactWrapper>
       </StyledHeader>
+      
       {/* Main */}
-      <main
-        className={classnames(
-          horizontalLayoutClasses.contentWrapper,
-          'flex flex-1 flex-col'
-        )}
-      >
-        <LayoutContent>{children}</LayoutContent>
-      </main>
+      <LayoutContent>{children}</LayoutContent>
 
       {/* Footer */}
       {footer}

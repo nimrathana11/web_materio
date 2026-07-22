@@ -25,19 +25,9 @@ const Navigation = () => {
   
   return (
     <HorizontalNav customBreakpoint='800px'>
-      <Box
-        component="div"
-        className={horizontalLayoutClasses.navigation}
-        sx={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {!isBreakpointReached && (
-          <HorizontalMenu isHorizontal={true} scrolled={false} />
-        )}
-      </Box>
+      {!isBreakpointReached && (
+        <HorizontalMenu />
+      )}
     </HorizontalNav>
   )
 }
