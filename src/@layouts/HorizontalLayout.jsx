@@ -62,7 +62,6 @@ const HorizontalLayout = (props) => {
           top: 0,
           insetInlineStart: 0,
           insetInlineEnd: 0,
-          zIndex: 1100,
           transition: 'all 0.3s ease',
         }}
       >

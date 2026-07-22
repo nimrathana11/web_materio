@@ -8,6 +8,7 @@ import classnames from 'classnames'
 import HorizontalMenu from './HorizontalMenu'
 import HorizontalNav from '@menu/horizontal/HorizontalNav'
 import { useSettings } from '@core/hooks/useSettings'
+import useHorizontalNav from '@menu/hooks/useHorizontalNav'
 
 // Util Imports
 import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
@@ -15,6 +16,7 @@ import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
 const Navigation = () => {
   // Hooks
   const { settings } = useSettings()
+  const { isBreakpointReached } = useHorizontalNav()
   // Determine if Compact (boxed) mode is active
   const isContentCompact = settings.contentWidth === 'compact'
 
@@ -32,7 +34,9 @@ const Navigation = () => {
           alignItems: 'center',
         }}
       >
-        <HorizontalMenu isHorizontal={true} scrolled={false} />
+        {!isBreakpointReached && (
+          <HorizontalMenu isHorizontal={true} scrolled={false} />
+        )}
       </Box>
     </HorizontalNav>
   )
