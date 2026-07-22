@@ -1,8 +1,5 @@
 'use client'
 
-// React Imports
-import { useState, useEffect } from 'react'
-
 // Third-party Imports
 import classnames from 'classnames'
 import styled from '@emotion/styled'
@@ -31,7 +28,6 @@ const StyledNavbarContent = styled.div`
 const Navbar = props => {
   const { children } = props
   const { settings } = useSettings()
-  const [scrolled, setScrolled] = useState(false)
 
   // Navbar configuration fallback
   const navbarConfig = themeConfig.navbar || {}
@@ -40,20 +36,10 @@ const Navbar = props => {
   const navbarContentWidth = settings.contentWidth || navbarConfig.contentWidth
   const isContentCompact = navbarContentWidth === 'compact'
 
-  // Scroll detection
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   return (
     <Box
       component="div"
-      className={classnames(
-        horizontalLayoutClasses.navbar,
-        scrolled && 'scrolled'
-      )}
+      className={classnames(horizontalLayoutClasses.navbar)}
       sx={{
         width: '100%',
         display: 'flex',
@@ -63,10 +49,6 @@ const Navbar = props => {
         borderColor: 'divider',
         zIndex: 1100,
         transition: 'all 0.3s ease',
-        // backgroundColor: scrolled ? "rgba(var(--mui-palette-background-paperChannel, 255, 255, 255), 0.3)" : "background.paper",
-        // backdropFilter: scrolled ? "blur(40px)" : "none",
-        // WebkitBackdropFilter: scrolled ? "blur(40px) saturate(200%)" : "none",
-        // boxShadow: scrolled ? "0px 8px 32px rgba(0, 0, 0, 0.04)" : "none",
       }}
     >
       {/* Replaced the standard HTML div with our Styled Component.
