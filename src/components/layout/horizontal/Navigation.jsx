@@ -30,7 +30,6 @@ const Navigation = () => {
           width: '100%',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: 'transparent',
         }}
       >
         <HorizontalMenu isHorizontal={true} scrolled={false} />

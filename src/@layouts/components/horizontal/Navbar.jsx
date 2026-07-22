@@ -63,9 +63,10 @@ const Navbar = props => {
         borderColor: 'divider',
         zIndex: 1100,
         transition: 'all 0.3s ease',
-        ...(scrolled && {
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)',
-        })
+        // backgroundColor: scrolled ? "rgba(var(--mui-palette-background-paperChannel, 255, 255, 255), 0.3)" : "background.paper",
+        // backdropFilter: scrolled ? "blur(40px)" : "none",
+        // WebkitBackdropFilter: scrolled ? "blur(40px) saturate(200%)" : "none",
+        // boxShadow: scrolled ? "0px 8px 32px rgba(0, 0, 0, 0.04)" : "none",
       }}
     >
       {/* Replaced the standard HTML div with our Styled Component.

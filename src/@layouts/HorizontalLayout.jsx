@@ -18,25 +18,10 @@ import themeConfig from "@configs/themeConfig";
 import { horizontalLayoutClasses } from "./utils/layoutClasses";
 
 const HorizontalLayout = (props) => {
-  const { navbar, footer, navigation, children } = props;
+  const { navbar, footer, navigation, children, scrollContainer = "window" } = props;
   const { settings } = useSettings();
+  const [scrolled, setScrolled] = useState(false)
   const isContentCompact = settings.contentWidth === "compact";
-  const [scrolled, setScrolled] = useState(false);
-
-  if (settings.layout !== "horizontal") {
-    return null;
-  }
-
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setScrolled(window.scrollY > 10);
-  //   };
-
-  //   handleScroll();
-  //   window.addEventListener("scroll", handleScroll);
-
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
 
   const StyledCompactWrapper = styled.div`
     width: 100%;
@@ -68,12 +53,6 @@ const HorizontalLayout = (props) => {
           transition: "all 0.25s ease-in-out",
           borderBottom: "1px solid",
           borderColor: settings.skin === "default" ? "transparent" : "divider",
-          backgroundColor: scrolled
-            ? "rgba(var(--mui-palette-background-paperChannel, 255, 255, 255), 0.3)"
-            : "background.paper",
-          backdropFilter: scrolled ? "blur(40px)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(40px) saturate(200%)" : "none",
-          boxShadow: scrolled ? "0px 8px 32px rgba(0, 0, 0, 0.04)" : "none",
         }}
       >
         {navbar || null}
