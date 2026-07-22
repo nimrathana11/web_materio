@@ -20,7 +20,7 @@ const LayoutCustomizerButton = ({ isVisible = true }) => {
           position: 'fixed',
           top: 200,
           insetInlineEnd: 0,
-          zIndex: 1000,
+          zIndex: theme.zIndex.appBar + 1,
           width: 40,
           height: 40,
           borderStartStartRadius: 20,
