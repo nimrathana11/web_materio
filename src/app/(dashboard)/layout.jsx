@@ -14,6 +14,7 @@ import VerticalFooter from '@components/layout/vertical/Footer'
 // HORIZONTAL Specific Components
 import HorizontalNavbar from '@components/layout/horizontal/Navbar'
 import HorizontalNavigation from '@components/layout/horizontal/Navigation'
+import HorizontalNav from '@menu/horizontal/HorizontalNav'
 
 const Layout = async ({ children }) => {
   return (
@@ -29,13 +30,15 @@ const Layout = async ({ children }) => {
           </VerticalLayout>
         }
         horizontalLayout={
-          <HorizontalLayout 
-            navbar={<HorizontalNavbar />} 
-            navigation={<HorizontalNavigation />} 
-            footer={<VerticalFooter />}
-          >
-            {children}
-          </HorizontalLayout>
+          <HorizontalNav customBreakpoint='800px'>
+            <HorizontalLayout 
+              navbar={<HorizontalNavbar />} 
+              navigation={<HorizontalNavigation />} 
+              footer={<VerticalFooter />}
+            >
+              {children}
+            </HorizontalLayout>
+          </HorizontalNav>
         }
       />
     </Providers>
