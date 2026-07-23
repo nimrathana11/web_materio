@@ -60,7 +60,7 @@ const Navbar = props => {
           horizontalLayoutClasses.navbarContent,
           'w-full flex items-center justify-between px-6'
         )}
-        style={{ minHeight: '64px' }}
+        style={{ minHeight: 'var(--header-height)' }}
       >
         {children}
       </StyledNavbarContent>

@@ -17,7 +17,9 @@ const Navigation = () => {
       style={{
         paddingInline: `${themeConfig.layoutPadding}px`,
         transition: 'padding 0.3s ease',
-        paddingBlock: '2px',
+        minHeight: 'calc(var(--header-height) - 5px)',
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
       <HorizontalMenu />

@@ -28,7 +28,6 @@ const NavbarContent = () => {
         'flex items-center justify-between gap-4 is-full'
       )}
       sx={{
-        height: '60px',
         paddingInline: `${themeConfig.layoutPadding}px`,
         transition: 'padding 0.3s ease',
         backgroundColor: 'transparent',
