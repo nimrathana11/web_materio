@@ -3,8 +3,7 @@
 // Component & Core Hook Imports
 import HorizontalMenu from './HorizontalMenu'
 import { useSettings } from '@core/hooks/useSettings'
-
-// Util Imports
+import themeConfig from '@configs/themeConfig'
 
 const Navigation = () => {
   // Hooks
@@ -14,7 +13,15 @@ const Navigation = () => {
   if (settings.layout !== 'horizontal') return null
   
   return (
-    <HorizontalMenu />
+    <div 
+      style={{
+        paddingInline: `${themeConfig.layoutPadding}px`,
+        transition: 'padding 0.3s ease',
+        paddingBlock: '2px',
+      }}
+    >
+      <HorizontalMenu />
+    </div>
   )
 }
 

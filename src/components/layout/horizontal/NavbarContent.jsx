@@ -17,6 +17,7 @@ import useHorizontalNav from "@menu/hooks/useHorizontalNav";
 
 // Util Imports
 import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
+import themeConfig from '@configs/themeConfig'
 
 const NavbarContent = () => {
   const { isBreakpointReached } = useHorizontalNav();
@@ -28,8 +29,9 @@ const NavbarContent = () => {
       )}
       sx={{
         height: '60px',
-        px: { xs: 4, md: 6 },
-        backgroundColor: 'transparent', // Merges background color seamlessly
+        paddingInline: `${themeConfig.layoutPadding}px`,
+        transition: 'padding 0.3s ease',
+        backgroundColor: 'transparent',
       }}
     >
       {/* LEFT: Logo & Search */}
