@@ -4,13 +4,18 @@
 import HorizontalMenu from './HorizontalMenu'
 import { useSettings } from '@core/hooks/useSettings'
 import themeConfig from '@configs/themeConfig'
+import useHorizontalNav from "@menu/hooks/useHorizontalNav";
 
 const Navigation = () => {
   // Hooks
   const { settings } = useSettings()
+  const { isBreakpointReached } = useHorizontalNav();
 
   // If layout is vertical, this component is not rendered
   if (settings.layout !== 'horizontal') return null
+  if (isBreakpointReached) {
+    return null;
+  }
   
   return (
     <div 
