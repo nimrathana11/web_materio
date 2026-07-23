@@ -251,7 +251,6 @@ const HorizontalMenu = () => {
 
   return (
     <>
-      {/* Mobile Drawer – Using VerticalMenu for full consistency */}
       <Drawer
         open={isBreakpointReached && isToggled}
         onClose={handleDrawerClose}
@@ -267,11 +266,7 @@ const HorizontalMenu = () => {
         }}
         transitionDuration={transitionDuration}
       >
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ flex: 1, overflow: 'hidden' }}>
-            <VerticalMenu scrollMenu={scrollMenu} />
-          </Box>
-        </Box>
+        <VerticalMenu scrollMenu={scrollMenu} />
       </Drawer>
 
       {/* Desktop Horizontal Navigation */}
