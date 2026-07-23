@@ -1,34 +1,29 @@
-// Third-party Imports
 import styled from '@emotion/styled'
+import { menuClasses } from '../../utils/menuClasses'
 
 const StyledHorizontalMenuItem = styled.li`
   display: inline-block;
   position: relative;
 
-  > a, > .menu-button {
+  > a, > button {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 999px;
-    color: inherit;
+    padding: 5px 20px;
+    border-radius: 50px;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
     transition: all 0.2s ease;
+    white-space: nowrap;
   }
 
-  &.ts-menu-item-root:hover > a,
-  &.ts-menu-item-root:hover > .menu-button {
-    background: rgba(15, 23, 42, 0.04);
-    color: rgb(33, 150, 243);
+  &:hover > a,
+  &:hover > button {
+    background-color: var(--mui-palette-action-hover);
   }
 
-  &.ts-active > a,
-  &.ts-active > .menu-button {
-    background: rgba(33, 150, 243, 0.12);
-    color: rgb(33, 150, 243);
-    box-shadow: inset 0 0 0 1px rgba(33, 150, 243, 0.16);
+  &.${menuClasses.active} > a,
+  &.${menuClasses.active} > button {
+    background-color: #7C4DFF;
+    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
   }
 
   ${({ menuItemStyles }) => menuItemStyles}

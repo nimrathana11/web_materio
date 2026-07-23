@@ -1,78 +1,244 @@
 'use client'
 
-import React, { Children, cloneElement, forwardRef, useEffect, useId, useRef, useState } from 'react'
-import classnames from 'classnames'
-import { menuClasses } from '../utils/menuClasses'
+// React Imports
+import {
+  Children,
+  cloneElement,
+  forwardRef,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react"
 
-import MenuButton from '../vertical/MenuButton'
-import useHorizontalMenu from '../hooks/useHorizontalMenu'
-import StyledMenuLabel from '../styles/StyledMenuLabel'
-import StyledMenuPrefix from '../styles/StyledMenuPrefix'
-import StyledMenuSuffix from '../styles/StyledMenuSuffix'
-import StyledHorizontalSubMenu from './styles/StyledHorizontalSubMenu'
-import StyledHorizontalSubMenuContent from './styles/StyledHorizontalSubMenuContent'
+// Next Imports
+import { usePathname } from "next/navigation"
+
+// Third-party Imports
+import classnames from "classnames"
+
+// Component Imports
+import SubMenuContent from "./SubMenuContent"
+import MenuButton from "./MenuButton"
+
+// Icon Imports
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+
+// Hook Imports
+import useHorizontalMenu from "../hooks/useHorizontalMenu"
+
+// Util Imports
+import { menuClasses } from "../utils/menuClasses"
+import { confirmUrlInChildren, renderMenuIcon } from "../utils/menuUtils"
+
+// Styled Component Imports
+import StyledHorizontalSubMenu from "./styles/StyledHorizontalSubMenu"
+import StyledMenuLabel from "../styles/StyledMenuLabel"
+import StyledMenuPrefix from "../styles/StyledMenuPrefix"
+import StyledMenuSuffix from "../styles/StyledMenuSuffix"
 
 const SubMenu = (props, ref) => {
-  const { children, className, contentClassName, label, icon, title, prefix, suffix, defaultOpen, level = 0, disabled = false, rootStyles, onOpenChange, onClick, onKeyUp, ...rest } = props
+  // Props
+  const {
+    children,
+    className,
+    label,
+    icon,
+    prefix,
+    suffix,
+    defaultOpen,
+    level = 0,
+    disabled = false,
+    rootStyles,
+    onOpenChange,
+    ...rest
+  } = props
 
+  // States
   const [active, setActive] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+
+  // Refs
   const contentRef = useRef(null)
+
+  // Hooks
   const id = useId()
+  const pathname = usePathname()
 
-  const { renderExpandedMenuItemIcon, menuItemStyles, openSubmenu, toggleOpenSubmenu, transitionDuration, openSubmenusRef, textTruncate, isCollapsed } = useHorizontalMenu()
+  const {
+    renderExpandIcon,
+    renderExpandedMenuItemIcon,
+    menuItemStyles,
+    openSubmenu,
+    toggleOpenSubmenu,
+    transitionDuration,
+    openSubmenusRef,
+    textTruncate,
+    trigger = 'hover'
+  } = useHorizontalMenu()
 
+  // Vars
   const childNodes = Children.toArray(children).filter(Boolean)
-  const isSubMenuOpen = openSubmenu?.some(item => item.id === id) ?? false
+  const isSubMenuOpen = trigger === 'hover' 
+    ? isHovered 
+    : (openSubmenu?.some((item) => item.id === id) ?? false)
 
-  const handleSlideToggle = () => {
+  const handleToggle = () => {
+    if (disabled) return
     toggleOpenSubmenu?.({ level, label, active, id })
     onOpenChange?.(!isSubMenuOpen)
-    if (openSubmenusRef?.current && openSubmenusRef?.current.length > 0) openSubmenusRef.current = []
   }
 
-  useEffect(() => {
-    if (defaultOpen) openSubmenusRef?.current.push({ level, label, active: false, id })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleMouseEnter = () => {
+    if (disabled || trigger !== 'hover') return
+    setIsHovered(true)
+    onOpenChange?.(true)
+  }
 
-  useEffect(() => {
-    // set active if any child url matches - simplified: no pathname check here
-    // Could be enhanced similar to vertical implementation
-  }, [])
+  const handleMouseLeave = () => {
+    if (disabled || trigger !== 'hover') return
+    setIsHovered(false)
+    onOpenChange?.(false)
+  }
 
-  const getSubMenuItemStyles = element => {
+  const getSubMenuItemStyles = (element) => {
     if (menuItemStyles) {
-      const params = { level, disabled, active, isSubmenu: true, open: isSubMenuOpen }
+      const params = {
+        level,
+        disabled,
+        active,
+        isSubmenu: true,
+        open: isSubMenuOpen,
+      }
       const styleFunction = menuItemStyles[element]
-      if (styleFunction) return typeof styleFunction === 'function' ? styleFunction(params) : styleFunction
+      if (styleFunction) {
+        return typeof styleFunction === "function"
+          ? styleFunction(params)
+          : styleFunction
+      }
     }
   }
 
-  const submenuContent = (
-    <StyledHorizontalSubMenuContent ref={contentRef} open={isSubMenuOpen} level={level} transitionDuration={transitionDuration} className={classnames(menuClasses.subMenuContent, contentClassName)} rootStyles={{ ...getSubMenuItemStyles('subMenuContent') }}>
-      <ul className="horizontal-submenu-ul">{childNodes.map(node => cloneElement(node, { level: level + 1 }))}</ul>
-    </StyledHorizontalSubMenuContent>
-  )
+  // Initial open logic
+  useEffect(() => {
+    if (confirmUrlInChildren(children, pathname)) {
+      openSubmenusRef?.current?.push({ level, label, active: true, id })
+    } else if (defaultOpen) {
+      openSubmenusRef?.current?.push({ level, label, active: false, id })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Active state on route change
+  useEffect(() => {
+    if (confirmUrlInChildren(children, pathname)) {
+      setActive(true)
+    } else {
+      setActive(false)
+    }
+  }, [pathname, children])
 
   return (
     <StyledHorizontalSubMenu
       ref={ref}
-      className={classnames(menuClasses.subMenuRoot, { [menuClasses.active]: active }, { [menuClasses.disabled]: disabled }, { [menuClasses.open]: isSubMenuOpen }, className)}
       level={level}
-      disabled={disabled}
-      menuItemStyles={getSubMenuItemStyles('root')}
-      buttonStyles={getSubMenuItemStyles('button')}
+      className={classnames(
+        menuClasses.subMenuRoot,
+        { [menuClasses.active]: active },
+        { [menuClasses.disabled]: disabled },
+        { [menuClasses.open]: isSubMenuOpen },
+        className
+      )}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      menuItemStyles={getSubMenuItemStyles("root")}
       rootStyles={rootStyles}
-      {...rest}
     >
-      <MenuButton ref={null} onClick={e => { onClick?.(e); handleSlideToggle() }} onKeyUp={onKeyUp} title={title} className={classnames(menuClasses.button, { [menuClasses.active]: active })} tabIndex={disabled ? -1 : 0}>
-        {icon && <span className={menuClasses.icon} style={getSubMenuItemStyles('icon')}>{icon}</span>}
-        {prefix && <StyledMenuPrefix className={menuClasses.prefix} rootStyles={getSubMenuItemStyles('prefix')}>{prefix}</StyledMenuPrefix>}
-        <StyledMenuLabel className={menuClasses.label} rootStyles={getSubMenuItemStyles('label')} textTruncate={textTruncate}>{label}</StyledMenuLabel>
-        {suffix && <StyledMenuSuffix className={menuClasses.suffix} rootStyles={getSubMenuItemStyles('suffix')}>{suffix}</StyledMenuSuffix>}
+      <MenuButton
+        onClick={handleToggle}
+        title={props.title}
+        className={classnames(menuClasses.button, {
+          [menuClasses.active]: active,
+        })}
+        tabIndex={disabled ? -1 : 0}
+        level={level}
+        disabled={disabled}
+        {...rest}
+      >
+        {/* Render Icon */}
+        {renderMenuIcon({
+          icon,
+          level,
+          active,
+          disabled,
+          renderExpandedMenuItemIcon,
+          styles: getSubMenuItemStyles("icon"),
+        })}
+
+        {/* Prefix */}
+        {prefix && (
+          <StyledMenuPrefix
+            className={menuClasses.prefix}
+            rootStyles={getSubMenuItemStyles("prefix")}
+          >
+            {prefix}
+          </StyledMenuPrefix>
+        )}
+
+        {/* Label */}
+        <StyledMenuLabel
+          className={menuClasses.label}
+          rootStyles={getSubMenuItemStyles("label")}
+          textTruncate={textTruncate}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            lineHeight: 1,
+          }}
+        >
+          {label}
+        </StyledMenuLabel>
+
+        {/* Suffix */}
+        {suffix && (
+          <StyledMenuSuffix
+            className={menuClasses.suffix}
+            rootStyles={getSubMenuItemStyles("suffix")}
+          >
+            {suffix}
+          </StyledMenuSuffix>
+        )}
+
+        {/* Expand Icon - Down Chevron for Top Level, Right Chevron for Sub-levels */}
+        <span className={menuClasses.subMenuExpandIcon} style={{ display: 'flex', alignItems: 'center' }}>
+          {renderExpandIcon ? (
+            renderExpandIcon({ level, disabled, active, open: isSubMenuOpen })
+          ) : level === 0 ? (
+            <KeyboardArrowDownIcon
+              fontSize="small"
+              style={{
+                transition: "transform 0.2s ease-in-out",
+                transform: isSubMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            />
+          ) : (
+            <ChevronRightIcon fontSize="small" />
+          )}
+        </span>
       </MenuButton>
 
-      {submenuContent}
+      {/* Dropdown Content */}
+      <SubMenuContent
+        ref={contentRef}
+        open={isSubMenuOpen}
+        level={level}
+        transitionDuration={transitionDuration}
+      >
+        {childNodes.map((node) =>
+          cloneElement(node, { level: level + 1 })
+        )}
+      </SubMenuContent>
     </StyledHorizontalSubMenu>
   )
 }
