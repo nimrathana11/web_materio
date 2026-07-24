@@ -20,7 +20,12 @@ const Container = styled.div`
   border: 1px solid var(--mui-palette-divider, rgba(225, 230, 240, 0.12));
   box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.18);
   border-radius: 12px;
-  z-index: 9999;
+  
+  /* CRITICAL FIX 1: Incremental z-index so Level 2 renders above Level 1, Level 1 above Level 0 */
+  z-index: ${({ level }) => 9999 + level};
+  
+  /* CRITICAL FIX 2: Ensure overflow never clips child elements */
+  overflow: visible !important;
 
   /* Transitions */
   opacity: 0;
@@ -60,6 +65,7 @@ const Container = styled.div`
     flex-direction: column;
     gap: 2px;
     width: 100%;
+    overflow: visible !important;
   }
 
   ul > li {
@@ -113,7 +119,7 @@ const SubMenuContent = (props, ref) => {
 
       // Desired dimensions
       const preferredWidth = Math.min(360, Math.max(200, anchorRect.width));
-      const contentMargin = 10; 
+      const contentMargin = 6; 
       const contentWidth = Math.min(preferredWidth, viewportW - contentMargin * 2);
 
       const measuredHeight = elRef.current?.offsetHeight || 0;
@@ -179,16 +185,18 @@ const SubMenuContent = (props, ref) => {
   return createPortal(
     <Container
       ref={elRef}
+      level={level} /* Passed to Emotion styled container */
       className={open && styles.isReady ? menuClasses.open : ""}
       transitionDuration={transitionDuration}
       rootStyles={rootStyles}
       style={{
-        position: "fixed", /* FIXED avoids coordinate bugs with body scrolling */
+        position: "fixed",
         left: styles.left,
         top: styles.top,
         minWidth: styles.minWidth,
         maxWidth: styles.maxWidth,
         transformOrigin: styles.transformOrigin,
+        zIndex: 9999 + level, /* Inline fallback to guarantee stack order */
       }}
       {...rest}
     >
