@@ -22,9 +22,9 @@ export const MenuData = [
         label: 'Auth Pages',
         icon: <i className='ri-shield-keyhole-line' />,
         children: [
-          { type: 'item', label: 'Login', href: '/login', target: '_blank' },
-          { type: 'item', label: 'Register', href: '/register', target: '_blank' },
-          { type: 'item', label: 'Forgot Password', href: '/forgot-password', target: '_blank' }
+          { icon: <i className='ri-login-box-line' />, type: 'item', label: 'Login', href: '/login', target: '_blank' },
+          { icon: <i className='ri-user-add-line' />, type: 'item', label: 'Register', href: '/register', target: '_blank' },
+          { icon: <i className='ri-lock-password-line' />, type: 'item', label: 'Forgot Password', href: '/forgot-password', target: '_blank' }
         ]
       },
       {
@@ -51,16 +51,19 @@ export const MenuData = [
         icon: <i className='ri-more-line' />,
         children: [
           {
+            icon: <i className='ri-file-list-3-line' />,
             type: 'item',
             label: 'Item With Badge',
             suffix: <Chip label='New' size='small' color='info' />
           },
           {
+            icon: <i className='ri-external-link-line' />,
             type: 'item',
             label: 'External Link',
             suffix: <i className='ri-external-link-line text-xl' />
           },
           {
+            icon: <i className='ri-menu-2-line' />,
             type: 'submenu',
             label: 'Menu Levels',
             children: [

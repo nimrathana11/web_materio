@@ -14,24 +14,23 @@ const StyledSubMenuContent = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 240px;
-  max-width: 380px;
-  max-height: min(400px, calc(100vh - 120px));
-  overflow-y: auto;
-  overflow-x: visible;
+  min-width: 230px;
+  max-width: 320px;
   box-sizing: border-box;
-  border-radius: 22px;
-  background: var(--mui-palette-background-paper);
-  border: 1px solid transparent;
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.16);
+  padding: 6px;
+  border-radius: 16px;
+  background: var(--mui-palette-background-paper, #ffffff);
+  border: 1px solid var(--mui-palette-divider, rgba(225, 230, 240, 0.12));
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.18);
   z-index: 9999;
+  
+  /* Smooth Fade & Slide Transitions */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px);
+  transform: translateY(6px);
   transition:
-    opacity ${({ transitionDuration }) => transitionDuration}ms ease,
-    transform ${({ transitionDuration }) => transitionDuration}ms ease,
-    box-shadow ${({ transitionDuration }) => transitionDuration}ms ease;
+    opacity ${({ transitionDuration }) => transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform ${({ transitionDuration }) => transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 
   &.${menuClasses.open} {
@@ -41,60 +40,46 @@ const StyledSubMenuContent = styled.div`
     pointer-events: auto;
   }
 
+  /* Nested Flyout Positioning */
   ${({ isNested, isOverflowRight }) =>
     isNested &&
     `
-      top: 0;
-      margin-top: 0;
-
+      top: -6px; /* Slightly align with parent item top */
+      
       ${
         isOverflowRight
           ? `
-            right: calc(100% + 8px);
+            right: calc(100% + 6px);
             left: auto;
           `
           : `
-            left: calc(100% + 8px);
+            left: calc(100% + 6px);
             right: auto;
           `
       }
     `}
 
+  /* Clean Single Column Layout */
   ul {
     list-style: none;
-    padding: 4px 0;
+    padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   ul > li {
     margin: 0;
     padding: 0;
-    border-radius: 16px;
-    transition: background-color 0.2s ease;
-    display: block;
     width: 100%;
+    display: flex;
   }
 
+  /* Make direct children (buttons/links) fill the full width neatly */
   ul > li > * {
-    display: block;
     width: 100%;
-    border-radius: inherit;
-  }
-
-  ul > li:hover {
-    background-color: var(--mui-palette-action-hover);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(15, 23, 42, 0.16);
-    border-radius: 999px;
+    border-radius: 50px;
   }
 
   ${({ rootStyles }) => rootStyles}
@@ -110,7 +95,6 @@ const SubMenuContent = (props, ref) => {
   } = props;
 
   const contentRef = useRef(null);
-
   const [isOverflowRight, setIsOverflowRight] = useState(false);
 
   useImperativeHandle(ref, () => contentRef.current);
@@ -123,14 +107,9 @@ const SubMenuContent = (props, ref) => {
 
     const checkPosition = () => {
       const rect = contentRef.current.getBoundingClientRect();
-      const overflowRight = rect.right > window.innerWidth - 8;
-      const overflowLeft = rect.left < 8;
+      const overflowRight = rect.right > window.innerWidth - 12;
 
       setIsOverflowRight(overflowRight);
-
-      if (overflowLeft && !overflowRight) {
-        setIsOverflowRight(false);
-      }
     };
 
     requestAnimationFrame(checkPosition);

@@ -41,7 +41,15 @@ export const confirmUrlInChildren = (children, url) => {
  * Render all the icons for Menu Item and SubMenu components for all the levels more than 0
  */
 export const renderMenuIcon = params => {
-  const { icon, level, active, disabled, styles, renderExpandedMenuItemIcon, isBreakpointReached } = params
+  const {
+    icon,
+    level,
+    active,
+    disabled,
+    styles,
+    renderExpandedMenuItemIcon,
+    isBreakpointReached,
+  } = params
 
   if (icon && (level === 0 || (!isBreakpointReached && level && level > 0))) {
     return (
@@ -51,25 +59,27 @@ export const renderMenuIcon = params => {
     )
   }
 
-  if (
-    level &&
-    level !== 0 &&
-    renderExpandedMenuItemIcon &&
-    renderExpandedMenuItemIcon.icon !== null &&
-    (!renderExpandedMenuItemIcon.level || renderExpandedMenuItemIcon.level >= level)
-  ) {
-    const iconToRender =
-      typeof renderExpandedMenuItemIcon.icon === 'function'
-        ? renderExpandedMenuItemIcon.icon({ level, active, disabled })
-        : renderExpandedMenuItemIcon.icon
+  if (level && level !== 0 && !isBreakpointReached) {
+    let iconToRender = icon
 
-    if (iconToRender) {
-      return (
-        <StyledMenuIcon className={menuClasses.icon} rootStyles={styles}>
-          {iconToRender}
-        </StyledMenuIcon>
-      )
+    if (!iconToRender && renderExpandedMenuItemIcon && renderExpandedMenuItemIcon.icon !== null) {
+      if (!renderExpandedMenuItemIcon.level || renderExpandedMenuItemIcon.level >= level) {
+        iconToRender =
+          typeof renderExpandedMenuItemIcon.icon === 'function'
+            ? renderExpandedMenuItemIcon.icon({ level, active, disabled })
+            : renderExpandedMenuItemIcon.icon
+      }
     }
+
+    if (!iconToRender) {
+      iconToRender = <i className='ri-checkbox-blank-circle-line' />
+    }
+
+    return (
+      <StyledMenuIcon className={menuClasses.icon} rootStyles={styles}>
+        {iconToRender}
+      </StyledMenuIcon>
+    )
   }
 
   return null

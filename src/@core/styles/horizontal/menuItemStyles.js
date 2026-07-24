@@ -34,7 +34,7 @@ const menuItemStyles = (theme, primaryColor, skin = 'default') => {
 
     button: ({ level, isSubmenu }) => ({
       padding: isSubmenu ? (level > 0 ? '10px 18px' : '10px 16px') : '12px 20px',
-      borderRadius: isSubmenu ? '16px' : '8px',
+      borderRadius: '50px',
       transition: 'all 0.2s ease',
       whiteSpace: 'nowrap',
 
@@ -78,11 +78,10 @@ const menuItemStyles = (theme, primaryColor, skin = 'default') => {
 
     subMenuContent: {
       border: `1px solid ${contentBorder}`,
-      borderRadius: '22px',
+      borderRadius: '16px',
       backgroundColor: 'var(--mui-palette-background-paper)',
       boxShadow: '0 24px 80px rgba(15, 23, 42, 0.16)',
       overflow: 'hidden',
-      padding: '8px 0',
     },
   }
 }
