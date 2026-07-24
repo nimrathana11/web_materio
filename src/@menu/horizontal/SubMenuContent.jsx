@@ -39,26 +39,30 @@ const StyledSubMenuContent = styled.div`
   ${({ isNested, isOverflowRight }) =>
     isNested &&
     `
-      top: -6px; /* Slightly align with parent item top */
-      
+      top: 0; /* Align with parent item top */
+      margin-top: 0;
+
       ${
         isOverflowRight
           ? `
-            right: calc(100% + 6px);
+            right: 100%;
             left: auto;
           `
           : `
-            left: calc(100% + 6px);
+            left: 100%;
             right: auto;
           `
       }
     `}
 
   /* Clean Single Column Layout */
-  ul {
-    list-style: none;
-    padding: 0;
+  ul, ul:not([class]) {
     margin: 0;
+    margin-block: 0;
+    padding: 0;
+    padding-inline-start: 0; /* Clears the unwanted 40px indent */
+    list-style: none;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -68,13 +72,11 @@ const StyledSubMenuContent = styled.div`
     margin: 0;
     padding: 0;
     width: 100%;
-    display: flex;
   }
 
   /* Make direct children (buttons/links) fill the full width neatly */
   ul > li > * {
     width: 100%;
-    border-radius: 50px;
   }
 
   ${({ rootStyles }) => rootStyles}
