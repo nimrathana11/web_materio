@@ -12,7 +12,7 @@ import styled from "@emotion/styled";
 import { menuClasses } from "../utils/menuClasses";
 
 const Container = styled.div`
-  /* CRITICAL: Fixed positioning works reliably with Portal bounding boxes */
+  /* Fixed positioning works reliably with Portal bounding boxes */
   position: fixed; 
   box-sizing: border-box;
   padding: 6px;
@@ -21,10 +21,10 @@ const Container = styled.div`
   box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.18);
   border-radius: 12px;
   
-  /* CRITICAL FIX 1: Incremental z-index so Level 2 renders above Level 1, Level 1 above Level 0 */
+  /* Stack ordering */
   z-index: ${({ level }) => 9999 + level};
   
-  /* CRITICAL FIX 2: Ensure overflow never clips child elements */
+  /* Ensure popout hitboxes aren't cut off while keeping internal text clean */
   overflow: visible !important;
 
   /* Transitions */
@@ -65,18 +65,36 @@ const Container = styled.div`
     flex-direction: column;
     gap: 2px;
     width: 100%;
-    overflow: visible !important;
   }
 
   ul > li {
     width: 100%;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    /* Prevent child items from pushing parent width */
+    min-width: 0; 
   }
 
+  /* Target direct interactive items inside li */
   ul > li > * {
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0; /* CRITICAL for flex truncation to work */
+  }
+
+  /* Force label text truncation on overflow */
+  ul > li span, 
+  ul > li .menu-label,
+  ul > li a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   ${({ rootStyles }) => rootStyles}
@@ -97,8 +115,7 @@ const SubMenuContent = (props, ref) => {
   const [styles, setStyles] = useState({
     left: -9999,
     top: -9999,
-    minWidth: 180,
-    maxWidth: 360,
+    width: 220,
     transformOrigin: "top left",
     isReady: false,
   });
@@ -117,10 +134,9 @@ const SubMenuContent = (props, ref) => {
       const viewportW = window.innerWidth;
       const viewportH = window.innerHeight;
 
-      // Desired dimensions
-      const preferredWidth = Math.min(360, Math.max(200, anchorRect.width));
-      const contentMargin = 6; 
-      const contentWidth = Math.min(preferredWidth, viewportW - contentMargin * 2);
+      // Set explicit fixed width bounds (Min 220px, Max 320px or Viewport Limit)
+      const contentMargin = 10; 
+      const contentWidth = Math.min(300, Math.max(220, viewportW - contentMargin * 2));
 
       const measuredHeight = elRef.current?.offsetHeight || 0;
       const contentHeight = measuredHeight || 200;
@@ -134,18 +150,15 @@ const SubMenuContent = (props, ref) => {
         left = anchorRect.left;
         top = anchorRect.bottom + 4;
 
-        // Overflow Right -> Align right edge of menu with right edge of anchor
         if (left + contentWidth > viewportW - contentMargin) {
           left = Math.max(contentMargin, anchorRect.right - contentWidth);
           transformOrigin = "top right";
         }
       } else {
-        // --- LEVEL > 0: NESTED SUBMENU FLYOUT ---
-        // Open to the right by default
+        // --- LEVEL > 0: NESTED FLYOUT ---
         left = anchorRect.right + contentMargin;
         top = anchorRect.top - 6;
 
-        // Check horizontal overflow (Flip to LEFT side)
         if (left + contentWidth > viewportW - contentMargin) {
           left = anchorRect.left - contentWidth - contentMargin;
           transformOrigin = "top right";
@@ -161,8 +174,7 @@ const SubMenuContent = (props, ref) => {
       setStyles({
         left,
         top,
-        minWidth: Math.max(160, Math.min(360, contentWidth)),
-        maxWidth: Math.min(480, viewportW - contentMargin * 2),
+        width: contentWidth,
         transformOrigin,
         isReady: true,
       });
@@ -185,7 +197,7 @@ const SubMenuContent = (props, ref) => {
   return createPortal(
     <Container
       ref={elRef}
-      level={level} /* Passed to Emotion styled container */
+      level={level}
       className={open && styles.isReady ? menuClasses.open : ""}
       transitionDuration={transitionDuration}
       rootStyles={rootStyles}
@@ -193,10 +205,9 @@ const SubMenuContent = (props, ref) => {
         position: "fixed",
         left: styles.left,
         top: styles.top,
-        minWidth: styles.minWidth,
-        maxWidth: styles.maxWidth,
+        width: styles.width, // Hard width prevents overflowing elements from forcing resize
         transformOrigin: styles.transformOrigin,
-        zIndex: 9999 + level, /* Inline fallback to guarantee stack order */
+        zIndex: 9999 + level,
       }}
       {...rest}
     >
