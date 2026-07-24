@@ -14,23 +14,18 @@ const StyledSubMenuContent = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 230px;
   max-width: 320px;
   box-sizing: border-box;
   padding: 6px;
-  border-radius: 16px;
   background: var(--mui-palette-background-paper, #ffffff);
   border: 1px solid var(--mui-palette-divider, rgba(225, 230, 240, 0.12));
   box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.18);
-  z-index: 9999;
   
   /* Smooth Fade & Slide Transitions */
   opacity: 0;
   visibility: hidden;
   transform: translateY(6px);
-  transition:
-    opacity ${({ transitionDuration }) => transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform ${({ transitionDuration }) => transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity ${({ transitionDuration }) => transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${({ transitionDuration }) => transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 
   &.${menuClasses.open} {

@@ -237,9 +237,7 @@ const SubMenu = (props, ref) => {
         transitionDuration={transitionDuration}
         rootStyles={getSubMenuItemStyles('subMenuContent')}
       >
-        {childNodes.map((node) =>
-          cloneElement(node, { level: level + 1 })
-        )}
+        { childNodes.map((node) => cloneElement(node, { level: level + 1 })) }
       </SubMenuContent>
     </StyledHorizontalSubMenu>
   )

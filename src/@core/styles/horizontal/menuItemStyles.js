@@ -78,7 +78,7 @@ const menuItemStyles = (theme, primaryColor, skin = 'default') => {
 
     subMenuContent: {
       border: `1px solid ${contentBorder}`,
-      borderRadius: '16px',
+      borderRadius: '5px',
       backgroundColor: 'var(--mui-palette-background-paper)',
       boxShadow: '0 24px 80px rgba(15, 23, 42, 0.16)',
       overflow: 'hidden',
