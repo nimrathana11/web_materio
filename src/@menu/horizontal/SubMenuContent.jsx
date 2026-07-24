@@ -20,7 +20,8 @@ const StyledSubMenuContent = styled.div`
   background: var(--mui-palette-background-paper, #ffffff);
   border: 1px solid var(--mui-palette-divider, rgba(225, 230, 240, 0.12));
   box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.18);
-  
+  z-index: 9999;
+
   /* Smooth Fade & Slide Transitions */
   opacity: 0;
   visibility: hidden;
@@ -45,11 +46,11 @@ const StyledSubMenuContent = styled.div`
       ${
         isOverflowRight
           ? `
-            right: 100%;
+            right: calc(100% + 8px);
             left: auto;
           `
           : `
-            left: 100%;
+            left: calc(100% + 8px);
             right: auto;
           `
       }

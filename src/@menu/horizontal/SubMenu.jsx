@@ -61,6 +61,7 @@ const SubMenu = (props, ref) => {
 
   // Refs
   const contentRef = useRef(null)
+  const hoverTimeoutRef = useRef(null)
 
   // Hooks
   const id = useId()
@@ -92,15 +93,32 @@ const SubMenu = (props, ref) => {
 
   const handleMouseEnter = () => {
     if (disabled || trigger !== 'hover') return
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
     setIsHovered(true)
     onOpenChange?.(true)
   }
 
   const handleMouseLeave = () => {
     if (disabled || trigger !== 'hover') return
-    setIsHovered(false)
-    onOpenChange?.(false)
+    // delay closing to allow cursor to move into submenu without flicker
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovered(false)
+      onOpenChange?.(false)
+      hoverTimeoutRef.current = null
+    }, 160)
   }
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current)
+        hoverTimeoutRef.current = null
+      }
+    }
+  }, [])
 
   const getSubMenuItemStyles = (element) => {
     if (menuItemStyles) {
