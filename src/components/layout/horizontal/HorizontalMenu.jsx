@@ -113,6 +113,7 @@ const HorizontalMenu = () => {
         <Menu
           style={{
             paddingInline: `${themeConfig.layoutPadding}px`,
+            paddingBlock: "5px",
             transition: 'padding 0.3s ease',
             minHeight: 'calc(var(--header-height) - 5px)',
             display: 'flex',
