@@ -49,12 +49,13 @@ const MenuItem = (props, ref) => {
 
   const getMenuItemStyles = (element) => {
     if (menuItemStyles?.[element]) {
-      // 3. Pass level into params
       const params = { level, disabled, active, isSubmenu: false }
       const fn = menuItemStyles[element]
       return typeof fn === 'function' ? fn(params) : fn
     }
   }
+
+  const buttonStyles = getMenuItemStyles('button')
 
   useEffect(() => {
     const href = rest.href
@@ -82,6 +83,7 @@ const MenuItem = (props, ref) => {
         tabIndex={disabled ? -1 : 0}
         level={level}
         disabled={disabled}
+        buttonStyles={buttonStyles}
         {...rest}
       >
         {/* 4. Pass required properties to renderMenuIcon */}

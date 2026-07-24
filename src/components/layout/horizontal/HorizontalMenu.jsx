@@ -118,7 +118,7 @@ const HorizontalMenu = () => {
             display: 'flex',
             alignItems: 'center',
           }}
-          menuItemStyles={menuItemStyles(theme, settings?.primaryColor)}
+          menuItemStyles={menuItemStyles(theme, settings?.primaryColor, settings?.skin)}
           menuSectionStyles={menuSectionStyles(theme)}
           renderExpandIcon={RenderExpandIcon}
           subMenuOpenBehavior="hover"

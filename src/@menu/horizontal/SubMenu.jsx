@@ -164,6 +164,7 @@ const SubMenu = (props, ref) => {
         tabIndex={disabled ? -1 : 0}
         level={level}
         disabled={disabled}
+        buttonStyles={getSubMenuItemStyles('button')}
         {...rest}
       >
         {/* Render Icon */}
@@ -234,6 +235,7 @@ const SubMenu = (props, ref) => {
         open={isSubMenuOpen}
         level={level}
         transitionDuration={transitionDuration}
+        rootStyles={getSubMenuItemStyles('subMenuContent')}
       >
         {childNodes.map((node) =>
           cloneElement(node, { level: level + 1 })

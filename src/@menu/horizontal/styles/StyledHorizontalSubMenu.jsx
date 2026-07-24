@@ -10,6 +10,7 @@ const StyledHorizontalSubMenu = styled.li(({ theme }) => {
     position: relative;
     display: inline-block;
     list-style: none;
+    overflow: visible;
 
     > .${menuClasses.button} {
       display: flex;

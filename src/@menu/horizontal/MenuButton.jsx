@@ -24,11 +24,11 @@ export const menuButtonStyles = props => {
     transition: 'all 0.2s ease-in-out',
 
     '&:hover, &[aria-expanded="true"]': {
-      backgroundColor: 'rgba(255, 255, 255, 0.08)'
+      backgroundColor: 'var(--mui-palette-action-hover)'
     },
     '&:focus-visible': {
       outline: 'none',
-      backgroundColor: 'rgba(255, 255, 255, 0.08)'
+      backgroundColor: 'var(--mui-palette-action-hover)'
     },
     ...(disabled && {
       pointerEvents: 'none',
@@ -38,15 +38,17 @@ export const menuButtonStyles = props => {
   })
 }
 
-const MenuButton = ({ className, children, ...rest }, ref) => {
-  const buttonClassName = `${className || ''} ${rest.active ? menuClasses.active : ''}`.trim()
+const MenuButton = ({ className, children, buttonStyles, ...rest }, ref) => {
+  const { active, level, disabled, href, ...other } = rest
+  const buttonClassName = `${className || ''} ${active ? menuClasses.active : ''}`.trim()
 
-  return rest.href ? (
+  return href ? (
     <RouterLink
       ref={ref}
       className={buttonClassName}
-      href={rest.href}
-      {...rest}
+      href={href}
+      css={[menuButtonStyles({ level, disabled }), buttonStyles]}
+      {...other}
     >
       {children}
     </RouterLink>
@@ -54,7 +56,8 @@ const MenuButton = ({ className, children, ...rest }, ref) => {
     <a
       ref={ref}
       className={buttonClassName}
-      {...rest}
+      css={[menuButtonStyles({ level, disabled }), buttonStyles]}
+      {...other}
     >
       {children}
     </a>
